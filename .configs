@@ -8,4 +8,16 @@ network:
       addresses:
         - 192.168.100.1/24
 
+#NGINX
+server {
+    listen 192.168.100.1:80;
+    server_name _;
+
+    location / {
+        proxy_pass http://localhost:8080; # El puerto de tu Sail
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+}
     
