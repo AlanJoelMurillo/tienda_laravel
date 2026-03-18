@@ -24,5 +24,64 @@ server {
 
 }
 
+----------------------------------------------------------------------------------------------------------------------------------------
+server {
+    listen 192.168.100.1:80;
+    server_name _;
+
+    root /home/ubuntu1/tienda_laravel/public;
+    index index.php;
+
+    # 1. ESTO ARREGLA LOS ESTILOS:
+    # Intenta buscar el archivo físico. Si existe (ej. app.css), lo entrega.
+    # Si NO existe, manda la petición al index.php (Laravel).
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    # 2. ESTO ARREGLA LAS RUTAS (/login, /register):
+    # Cualquier petición que termine en .php o que sea enviada aquí por el try_files
+    # será procesada por el contenedor de Sail.
+    location ~ \.php$ {
+        proxy_pass http://localhost:8080;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    # 3. OPCIONAL: Evita logs innecesarios de iconos y archivos no encontrados
+    location = /favicon.ico { access_log off; log_not_found off; }
+    location = /robots.txt  { access_log off; log_not_found off; }
+}
+server {
+    listen 192.168.100.1:80;
+    server_name _;
+
+    root /home/ubuntu1/tienda_laravel/public;
+    index index.php;
+
+    # 1. ESTO ARREGLA LOS ESTILOS:
+    # Intenta buscar el archivo físico. Si existe (ej. app.css), lo entrega.
+    # Si NO existe, manda la petición al index.php (Laravel).
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    # 2. ESTO ARREGLA LAS RUTAS (/login, /register):
+    # Cualquier petición que termine en .php o que sea enviada aquí por el try_files
+    # será procesada por el contenedor de Sail.
+    location ~ \.php$ {
+        proxy_pass http://localhost:8080;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    # 3. OPCIONAL: Evita logs innecesarios de iconos y archivos no encontrados
+    location = /favicon.ico { access_log off; log_not_found off; }
+    location = /robots.txt  { access_log off; log_not_found off; }
+}
 
 
